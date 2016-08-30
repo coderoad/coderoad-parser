@@ -8,68 +8,49 @@
 }
 
 start
-  = doc
+  = info
   { return output; }
 
 doc
   = info
+    page*
 
 page
-  = title: page_title
-    description: description
-  {
-    // set page
-    output.pages.push({
-      title: title,
-      description: description
-    });
-  }
+  = page_title
+    description
 
 page_title
   = '##'
     space
     title: content
+    EOL
     { return title.join(''); }
 
 info
   = title: info_title
-    end
-    description: description
-    end
+  	description: description
   {
     // set info
     output.info.title = title;
-    output.info.description = description;
+    output.info.description = description
   }
 
 info_title
   = '#'
     space
     title: content
-    end
+    EOL
   { return title.join(''); }
 
 description
   = description: content
+    EOL
   { return description.join(''); }
 
-content = .+
-space = [ ]?
-end = [\n]
+content = [0-9A-Za-z ]*
+space = [ ]
+EOL = [\n\r]?
+file_path = [a-z_\-\s0-9\.]+
+quote = [\"\'\`]
 
-// @import
-
-// page
-// page_title
-// page_description
-// page_test
-// page_action
-// page_hint
-// page_on_complete
-
-// @action_insert
-// @action_set
-// @action_write
-// @action_write_from_file
-// @action_open
-// @action_cursor_position
+break = space EOL
