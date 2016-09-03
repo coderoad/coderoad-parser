@@ -64,14 +64,17 @@ page_task
     space?
   	description: content
     break
+    test: task_test*
+    break?
    {
     position.task += 1;
     if (!output.pages[position.page].tasks) {
     	output.pages[position.page].tasks = [];
     }
    	output.pages[position.page].tasks.push({
-		description: adjust(description)
-    })
+		description: adjust(description),
+        tests: test
+     })
    }
 
 page_actions
@@ -85,6 +88,11 @@ task_actions
 
 task_test
 	= '@test'
+    '(' quote
+    testPath: [^\n^\r^\'\"\`)]+
+	quote ')'
+    break
+    { return testPath.join(''); }
 
 task_hint
 	= '@hint'
@@ -121,9 +129,3 @@ space = [ \s]
 break = [\n\r]?
 file_path = [a-z_\-\s0-9\.]+
 quote = [\"\'\`]
-
-{
-// notes
-// - break if line starts with #
-// - break if line starts with @
-}
