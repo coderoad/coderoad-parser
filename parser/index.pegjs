@@ -2,6 +2,7 @@
   // final parsed output for coderoad.json file
   var position = {
   	page: -1,
+    task: -1,
   };
   var output = {
     info: {
@@ -23,21 +24,23 @@ start
 doc
   = info_title
     info_description*
-  	optionalBreak
+  	break?
   	page*
 
 page
   = page_title
     page_description*
+    page_task*
 
 page_title
   = '##'
-    optionalSpace
+    space?
     title: content
-    EOL
+    break
    	{
       // increment page
       position.page += 1;
+      position.task = -1;
       // add page outline
       output.pages.push({
       	title: 'Page ' + position.page,
@@ -49,36 +52,47 @@ page_title
 
 page_description
   = description: content
-  	EOL
+  	break
    {
    	const d = output.pages[position.page].description;
 	output.pages[position.page].description += d.length > 0 ? '\n' : '';
     output.pages[position.page].description += adjust(description);
 	}
 
+page_task
+	= '+'
+    space?
+  	description: content
+    break
+   {
+    position.task += 1;
+    if (!output.pages[position.page].tasks) {
+    	output.pages[position.page].tasks = [{
+        	description: adjust(description)
+        }]
+    }
+   }
+
 info_title
   = '#'
-    optionalSpace
+    space?
     title: content
   { output.info.title = adjust(title); }
 
 info_description
   = description: content
-    EOL
+    break
   {
   	const d = output.info.description;
     output.info.description += d.length > 0 ? '\n' : '';
 	output.info.description += adjust(description);
    }
 
-content = [^#] [^\n^\r]+ [\n\r]
+content = [^#^@^+] [^\n^\r]+ [\n\r]
 space = [ \s]
-EOL = [\n\r]?
+break = [\n\r]?
 file_path = [a-z_\-\s0-9\.]+
 quote = [\"\'\`]
-
-optionalBreak = EOL?
-optionalSpace = space?
 
 {
 // notes
