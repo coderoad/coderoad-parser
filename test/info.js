@@ -32,7 +32,7 @@ some description
   t.deepEqual(result.info, expected.info);
 });
 
-test.skip('parses a multiline description', t => {
+test('parses a multiline description', t => {
   const data = `# Title
 some description
 and more on

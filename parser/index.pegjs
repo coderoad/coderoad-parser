@@ -1,56 +1,87 @@
 {
+  // final parsed output for coderoad.json file
+  var position = {
+  	page: -1,
+  };
   var output = {
     info: {
-
+      title: 'Tutorial Title',
+      description: '',
     },
     pages: []
+  };
+
+  function adjust(item) {
+    return item[0].concat(item[1].join(''));
   }
 }
 
 start
-  = info
+  = doc
   { return output; }
 
 doc
-  = info
-    page*
+  = info_title
+    info_description*
+  	optionalBreak
+  	page*
 
 page
   = page_title
-    description
+    page_description*
 
 page_title
   = '##'
-    space
+    optionalSpace
     title: content
     EOL
-    { return title.join(''); }
+   	{
+      // increment page
+      position.page += 1;
+      // add page outline
+      output.pages.push({
+      	title: 'Page ' + position.page,
+          description: '',
+      });
+      // add page title
+      output.pages[position.page].title = adjust(title);
+    }
 
-info
-  = title: info_title
-  	description: description
-  {
-    // set info
-    output.info.title = title;
-    output.info.description = description
-  }
+page_description
+  = description: content
+  	EOL
+   {
+   	const d = output.pages[position.page].description;
+	output.pages[position.page].description += d.length > 0 ? '\n' : '';
+    output.pages[position.page].description += adjust(description);
+	}
 
 info_title
   = '#'
-    space
+    optionalSpace
     title: content
-    EOL
-  { return title.join(''); }
+  { output.info.title = adjust(title); }
 
-description
+info_description
   = description: content
     EOL
-  { return description.join(''); }
+  {
+  	const d = output.info.description;
+    output.info.description += d.length > 0 ? '\n' : '';
+	output.info.description += adjust(description);
+   }
 
-content = [0-9A-Za-z ]*
-space = [ ]
+content = [^#] [^\n^\r]+ [\n\r]
+space = [ \s]
 EOL = [\n\r]?
 file_path = [a-z_\-\s0-9\.]+
 quote = [\"\'\`]
 
-break = space EOL
+optionalBreak = EOL?
+optionalSpace = space?
+
+{
+// notes
+// - break if line starts with #
+// - break if line starts with @
+}
