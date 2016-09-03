@@ -90,7 +90,7 @@ task_test
 	= '@test'
     '(' quote
     testPath: [^\n^\r^\'\"\`)]+
-	quote ')'
+	  quote ')'
     break
     { return testPath.join(''); }
 
