@@ -67,11 +67,36 @@ page_task
    {
     position.task += 1;
     if (!output.pages[position.page].tasks) {
-    	output.pages[position.page].tasks = [{
-        	description: adjust(description)
-        }]
+    	output.pages[position.page].tasks = [];
     }
+   	output.pages[position.page].tasks.push({
+		description: adjust(description)
+    })
    }
+
+page_actions
+	= page_onComplete
+    / page_import
+
+task_actions
+	= task_test
+    / task_hint
+    / task_action
+
+task_test
+	= '@test'
+
+task_hint
+	= '@hint'
+
+task_action
+	= '@action'
+
+page_onComplete
+	= '@onPageComplete'
+
+page_import
+	= '@import'
 
 info_title
   = '#'
@@ -87,6 +112,9 @@ info_description
     output.info.description += d.length > 0 ? '\n' : '';
 	output.info.description += adjust(description);
    }
+
+within_brackets
+	= '(' .+ ')' break
 
 content = [^#^@^+] [^\n^\r]+ [\n\r]
 space = [ \s]
