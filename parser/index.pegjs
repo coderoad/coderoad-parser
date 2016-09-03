@@ -15,6 +15,31 @@
   function adjust(item) {
     return item[0].concat(item[1].join(''));
   }
+  function trim({desc, str, first, last}) {
+  	if ( str[0].match(first) && str[str.length - 1].match(last || first) ) {
+    	return str.slice(1, -1);
+    }
+    console.log('Error. Could not parse ' + desc + ' in ' + str);
+   	return str;
+  }
+  function trimBrackets(str) {
+  	return trim({
+    	desc: 'bracket',
+      str: str,
+      first: /\(/,
+      last: /\)/,
+    });
+  }
+  function trimQuotes(str) {
+  	return trim({
+    	desc: 'quote',
+      str,
+      first: /[\"\'\`]/
+    });
+  }
+  function trimBracketsAndQuotes(str) {
+    return trimQuotes(trimBrackets(str));
+  }
 }
 
 start
@@ -44,7 +69,7 @@ page_title
       // add page outline
       output.pages.push({
       	title: 'Page ' + position.page,
-          description: '',
+        description: '',
       });
       // add page title
       output.pages[position.page].title = adjust(title);
@@ -54,8 +79,8 @@ page_description
   = description: content
   	break
    {
-   	const d = output.pages[position.page].description;
-	output.pages[position.page].description += d.length > 0 ? '\n' : '';
+    const d = output.pages[position.page].description;
+	  output.pages[position.page].description += d.length > 0 ? '\n' : '';
     output.pages[position.page].description += adjust(description);
 	}
 
@@ -65,17 +90,20 @@ page_task
   	description: content
     break
     test: task_test*
+    hint: task_hint*
     break?
-   {
+
+  {
     position.task += 1;
     if (!output.pages[position.page].tasks) {
     	output.pages[position.page].tasks = [];
     }
    	output.pages[position.page].tasks.push({
 		description: adjust(description),
-        tests: test
-     })
-   }
+      tests: test,
+      hints: hint,
+    })
+  }
 
 page_actions
 	= page_onComplete
@@ -92,10 +120,13 @@ task_test
     testPath: [^\n^\r^\'\"\`)]+
 	  quote ')'
     break
-    { return testPath.join(''); }
+  { return testPath.join(''); }
 
 task_hint
 	= '@hint'
+      hint: [^\n^\r]+
+    break
+  { return trimBracketsAndQuotes(hint.join('')); }
 
 task_action
 	= '@action'
@@ -118,11 +149,8 @@ info_description
   {
   	const d = output.info.description;
     output.info.description += d.length > 0 ? '\n' : '';
-	output.info.description += adjust(description);
-   }
-
-within_brackets
-	= '(' .+ ')' break
+	  output.info.description += adjust(description);
+  }
 
 content = [^#^@^+] [^\n^\r]+ [\n\r]
 space = [ \s]

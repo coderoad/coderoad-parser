@@ -15,3 +15,4 @@ test.todo('parses task tests across pages');
 
 test.todo('parses a task hint');
 test.todo('parses multiple task hints');
+test.todo('parses a task hint with single quote inside');
