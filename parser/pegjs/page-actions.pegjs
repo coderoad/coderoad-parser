@@ -1,7 +1,6 @@
 page_actions
   = on_page_complete
 
-
 on_page_complete
 	= '@onPageComplete'
     '('

@@ -1,15 +1,3 @@
-page_task
-	= '+'
-    space?
-  	description: description
-    actions: task_actions*
-    break?
-
-  { let task = { description, tests: [], hints: [] };
-	  actions.forEach(({type, value}) => task[type].push(value));
-	  return task;
-  }
-
 task_actions
   = test: task_test
   / hint: task_hint

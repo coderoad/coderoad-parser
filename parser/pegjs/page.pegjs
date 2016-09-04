@@ -16,3 +16,15 @@ page_title
     title: content
     break
   { return adjust(title); }
+
+page_task
+	= '+'
+    space?
+  	description: description
+    actions: task_actions*
+    break?
+
+  { let task = { description, tests: [], hints: [] };
+	  actions.forEach(({type, value}) => task[type].push(value));
+	  return task;
+  }

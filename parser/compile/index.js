@@ -4,7 +4,7 @@ const pegjs = require('pegjs');
 const loadImports = require('./loadImports');
 
 let compiled = '';
-const start = readFileSync(join(__dirname, '../pegjs/start.pegjs'), 'utf8');
+const start = readFileSync(join(__dirname, '../pegjs/index.pegjs'), 'utf8');
 
 compiled += loadImports(start);
 

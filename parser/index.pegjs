@@ -37,7 +37,6 @@
     return trimQuotes(trimBrackets(str));
   }
 
-
 }
 
 start
@@ -63,7 +62,6 @@ info_title
     title: content
   { return adjust(title); }
 
-
 page
   = title: page_title
     description: description*
@@ -82,7 +80,6 @@ page_title
     title: content
     break
   { return adjust(title); }
-
 
 page_task
 	= '+'
@@ -119,10 +116,8 @@ task_hint
   	return { type: 'hints', value: h };
   }
 
-
 page_actions
   = on_page_complete
-
 
 on_page_complete
 	= '@onPageComplete'
@@ -142,7 +137,6 @@ page_import
     ')'
     break
   { return filePath.join(''); }
-
 
 task_action
 	= '@action'
@@ -202,12 +196,10 @@ action_write_from_file
     quote
     ')'
 
-
 description
   = description: content
     break
   { return adjust(description); }
-
 
 content = [^#^@^+] [^\n^\r]+ [\n\r]
 space = [ \s]
