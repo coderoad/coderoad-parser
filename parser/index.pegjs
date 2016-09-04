@@ -57,6 +57,13 @@ info
     output.info.description = description.join('\n');
   }
 
+info_title
+  = '#'
+    space?
+    title: content
+  { return adjust(title); }
+
+
 page
   = title: page_title
     description: description*
@@ -68,6 +75,14 @@ page
       tasks,
     });
   }
+
+page_title
+  = '##'
+    space?
+    title: content
+    break
+  { return adjust(title); }
+
 
 page_task
 	= '+'
@@ -81,31 +96,10 @@ page_task
 	  return task;
   }
 
-page_actions
-  = on_page_complete
-
 task_actions
   = test: task_test
   / hint: task_hint
   / action: task_action
-
-info_title
-  = '#'
-    space?
-    title: content
-  { return adjust(title); }
-
-page_title
-  = '##'
-    space?
-    title: content
-    break
-  { return adjust(title); }
-
-description
-  = description: content
-    break
-  { return adjust(description); }
 
 task_test
 	= '@test'
@@ -126,6 +120,10 @@ task_hint
   }
 
 
+page_actions
+  = on_page_complete
+
+
 on_page_complete
 	= '@onPageComplete'
     '('
@@ -144,6 +142,7 @@ page_import
     ')'
     break
   { return filePath.join(''); }
+
 
 task_action
 	= '@action'
@@ -202,6 +201,13 @@ action_write_from_file
     from: file_path
     quote
     ')'
+
+
+description
+  = description: content
+    break
+  { return adjust(description); }
+
 
 content = [^#^@^+] [^\n^\r]+ [\n\r]
 space = [ \s]
