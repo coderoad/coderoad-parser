@@ -6,6 +6,8 @@ const parser = readFileSync('../parser/index.pegjs', 'utf8');
 const parse = pegjs.buildParser(parser).parse;
 
 test.todo('parses an action: open');
+
+
 test.todo('parses multiple actions: open');
 
 test.todo('parses an action: set');

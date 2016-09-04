@@ -80,3 +80,5 @@ description
 });
 
 test.todo('warns when missing a task test');
+
+test.todo('parses an array of task tests');

@@ -1,9 +1,5 @@
 {
   // final parsed output for coderoad.json file
-  var position = {
-  	page: -1,
-    task: -1,
-  };
   var output = {
     info: {
       title: 'Tutorial Title',
@@ -47,62 +43,53 @@ start
   { return output; }
 
 doc
-  = info_title
-    info_description*
+  = info
   	break?
-  	page*
+	page*
+
+info
+  = title: info_title
+  	description: description*
+   {
+   output.info.title = title;
+   output.info.description = description.join('\n');
+   }
 
 page
-  = page_title
-    page_description*
-    page_task*
+  = title: page_title
+    description: description*
+    tasks: page_task*
+    {
+	 output.pages.push({
+      	title,
+        description: description.join('\n'),
+        tasks,
+      });
+
+    }
 
 page_title
   = '##'
     space?
     title: content
     break
-   	{
-      // increment page
-      position.page += 1;
-      position.task = -1;
-      // add page outline
-      output.pages.push({
-      	title: 'Page ' + position.page,
-        description: '',
-      });
-      // add page title
-      output.pages[position.page].title = adjust(title);
-    }
-
-page_description
-  = description: content
-  	break
-   {
-    const d = output.pages[position.page].description;
-	  output.pages[position.page].description += d.length > 0 ? '\n' : '';
-    output.pages[position.page].description += adjust(description);
-	}
+   	{ return adjust(title); }
 
 page_task
 	= '+'
     space?
   	description: content
     break
-    test: task_test*
-    hint: task_hint*
+    tests: task_test*
+    hints: task_hint*
     break?
 
   {
-    position.task += 1;
-    if (!output.pages[position.page].tasks) {
-    	output.pages[position.page].tasks = [];
-    }
-   	output.pages[position.page].tasks.push({
-		description: adjust(description),
-      tests: test,
-      hints: hint,
-    })
+   	return {
+	  description: adjust(description),
+      tests,
+      hints,
+    };
   }
 
 page_actions
@@ -141,16 +128,12 @@ info_title
   = '#'
     space?
     title: content
-  { output.info.title = adjust(title); }
+    { return adjust(title); }
 
-info_description
+description
   = description: content
     break
-  {
-  	const d = output.info.description;
-    output.info.description += d.length > 0 ? '\n' : '';
-	  output.info.description += adjust(description);
-  }
+    { return adjust(description); }
 
 content = [^#^@^+] [^\n^\r]+ [\n\r]
 space = [ \s]

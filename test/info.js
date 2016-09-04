@@ -5,7 +5,7 @@ import { readFileSync } from 'fs';
 const parser = readFileSync('../parser/index.pegjs', 'utf8');
 const parse = pegjs.buildParser(parser).parse;
 
-test('parses a title', t => {
+test('parses an info title', t => {
   const data = `# Title\n`;
   const expected = {
     info: {
@@ -17,7 +17,19 @@ test('parses a title', t => {
   t.deepEqual(result.info, expected.info);
 });
 
-test('parses a description', t => {
+test('parses an info title with a # in the middle', t => {
+  const data = `# T#i#t#l#e#\n`;
+  const expected = {
+    info: {
+      title: 'T#i#t#l#e#',
+      description: ''
+    }
+  };
+  const result = parse(data);
+  t.deepEqual(result.info, expected.info);
+});
+
+test('parses an info description', t => {
   const data = `# Title
 some description
 `;
@@ -31,7 +43,7 @@ some description
   t.deepEqual(result.info, expected.info);
 });
 
-test('parses a multiline description', t => {
+test('parses an info multiline description', t => {
   const data = `# Title
 some description
 and more on
@@ -49,7 +61,29 @@ the next line`
   t.deepEqual(result.info, expected.info);
 });
 
-test.skip('parses a title after empty spaces', t => {
+test('parses an info description seperated by breaks', t => {
+  const data = `# Title
+some description
+
+and more on
+
+the next line
+`;
+  const expected = {
+    info: {
+      title: 'Title',
+      description: `some description
+
+and more on
+
+the next line`
+    }
+  };
+  const result = parse(data);
+  t.deepEqual(result.info, expected.info);
+});
+
+test.skip('parses an info title after empty spaces', t => {
   const data = `
 
 
