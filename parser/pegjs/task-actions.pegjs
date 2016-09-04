@@ -1,23 +1,23 @@
 task_action
 	= '@action'
     '('
-    action: action_type
+    value: action_type
 		')'
 		break
 
 	{
 		return {
 			type: 'actions',
-			value: action,
+			value
 		};
 	}
 
 action_type
-  = action: action_open
-  /*/ action_set
-  / action_insert
-  / action_write
-  / action_write_from_file*/
+  = action_open
+  // action_set
+  // action_insert
+  // action_write
+  / action_write_from_file
 
 
 action_open
@@ -64,3 +64,4 @@ action_write_from_file
     from: file_path
     quote
     ')'
+	{ return `writeFromFile("${to.join('')}", "${from.join('')}")`; }

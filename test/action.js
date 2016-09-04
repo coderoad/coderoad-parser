@@ -23,7 +23,7 @@ test.skip('parses an action: set', t => {
   const data = `${start}
 @action(set('var a = 42;'))
 `;
-  const expected = ["set('var a = 42;')"];
+  const expected = ["set(\"var a = 42;\")"];
   const result = parse(data);
   t.deepEqual(result.pages[0].tasks[0].actions, expected);
 });
@@ -38,6 +38,13 @@ test.skip('parses an action: insert', t => {
 });
 
 test.todo('parses an action: write');
-test.todo('parses an action: writeFileFromFile');
+
+test('parses an action: writeFromFile', t => {
+  const data = `${start}@action(writeFromFile('to.js', 'from.js'))
+`;
+  const expected = ["writeFromFile(\"to.js\", \"from.js\")"];
+  const result = parse(data);
+  t.deepEqual(result.pages[0].tasks[0].actions, expected);
+});
 
 test.todo('parses multiple actions: open & set');
