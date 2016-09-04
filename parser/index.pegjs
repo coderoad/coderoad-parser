@@ -71,11 +71,22 @@ page_task
 	= '+'
     space?
   	description: description
-    tests: task_test*
-    hints: task_hint*
+    actions: task_actions*
     break?
 
-  { return { description, tests, hints }; }
+  { let task = { description, tests: [], hints: [] };
+	  actions.forEach(({type, value}) => task[type].push(value));
+	  return task;
+  }
+
+page_actions
+  = page_onComplete
+  / page_import
+
+task_actions
+  = test: task_test
+  / hint: task_hint
+  / action: task_action
 
 info_title
   = '#'
@@ -95,15 +106,6 @@ description
     break
   { return adjust(description); }
 
-page_actions
-	= page_onComplete
-  / page_import
-
-task_actions
-	= task_test
-  / task_hint
-  / task_action
-
 task_test
 	= '@test'
     '('
@@ -112,13 +114,15 @@ task_test
 	  quote
     ')'
     break
-  { return testPath.join(''); }
+  { return { type: 'tests', value: testPath.join('') }; }
 
 task_hint
 	= '@hint'
     hint: [^\n^\r]+
     break
-  { return trimBracketsAndQuotes(hint.join('')); }
+  { let h = trimBracketsAndQuotes(hint.join(''));
+  	return { type: 'hints', value: h };
+  }
 
 task_action
 	= '@action'
@@ -136,7 +140,7 @@ page_import
     break
   { return filePath.join(''); }
 
-  
+
 // characters
 
 content = [^#^@^+] [^\n^\r]+ [\n\r]
