@@ -12,7 +12,7 @@
   /*** "pegjs/_types.js" ***/
 
   const pageTypes = ['onPageComplete'];
-  const taskTypes = ['tests', 'hints', 'actions']
+  const taskTypes = ['tests', 'hints', 'actions'];
 
   /*** "pegjs/_functions.js" ***/
 
@@ -215,11 +215,10 @@ task_action
 
 action_type
   = action_open
-  // action_set
-  // action_insert
-  // action_write
+  / action_set
+  / action_insert
+  / action_write
   / action_write_from_file
-
 
 action_open
   = 'open'
@@ -233,14 +232,16 @@ action_open
 action_insert
   = 'insert'
     '('
-    content: .+
-    ')'
+    content: between_brackets // TODO: make this more flexible
+		')'
+	{ return `insert(${flatten(content).join('')})`; }
 
 action_set
   = 'set'
-    '('
-    content: .+
-    ')'
+		'('
+    content: between_brackets // TODO: make this more flexible
+		')'
+	{ return `set(${flatten(content).join('')})`; }
 
 action_write
   = 'write'
@@ -250,9 +251,10 @@ action_write
     quote
     ',' space?
     quote
-    content: .+
+    content: [^\'\"]+ // TODO: make this more flexible
     quote
     ')'
+	{ return `write(\"${to.join('')}\", \"${content.join('')}\")`}
 
 action_write_from_file
   = 'writeFromFile'
@@ -282,4 +284,5 @@ space = [ \s]
 break = [\n\r]?
 file_path = [a-zA-Z0-9_\-\s\.]+
 quote = [\"\'\`]
+between_brackets = [^\)]+
 
