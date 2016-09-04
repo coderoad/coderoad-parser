@@ -21,7 +21,6 @@ test('parses a description', t => {
   const data = `# Title
 some description
 `;
-  console.log(data);
   const expected = {
     info: {
       title: 'Title',
@@ -38,7 +37,6 @@ some description
 and more on
 the next line
 `;
-  console.log(data);
   const expected = {
     info: {
       title: 'Title',
@@ -58,7 +56,6 @@ test.skip('parses a title after empty spaces', t => {
 # Title
 some description
 `;
-  console.log(data);
   const expected = {
     info: {
       title: 'Title',
