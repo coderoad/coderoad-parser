@@ -1,17 +1,57 @@
-action
-  = action_insert
+task_action
+	= '@action'
+    '('
+    type: action_type
+    ')'
+
+action_type
+  = action_open
   / action_set
+  / action_insert
   / action_write
   / action_write_from_file
-  / action_open
+  break
+
+action_open
+  = 'open'
+    '('
+    quote
+    file: file_path
+    quote
+    ')'
 
 action_insert
-  = 'insert(' + content + ')'
+  = 'insert'
+    '('
+    content: .+
+    ')'
+
 action_set
-  = 'set(' + content + ')'
+  = 'set'
+    '('
+    content: .+
+    ')'
+
 action_write
-  = 'write(' + content + ')'
+  = 'write'
+    '('
+    quote
+    to: file_path
+    quote
+    ',' space?
+    quote
+    content: .+
+    quote
+    ')'
+
 action_write_from_file
-  = 'writeFromFile(' + content + ')'
-action_open
-  = 'open(' + quote? + file_path + quote? ')'
+  = 'writeFromFile'
+    '('
+    quote
+    to: file_path
+    quote
+    ',' space?
+    quote
+    from: file_path
+    quote
+    ')'

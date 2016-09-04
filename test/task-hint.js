@@ -1,9 +1,5 @@
 import test from 'ava';
-import pegjs from 'pegjs';
-import { readFileSync } from 'fs';
-
-const parser = readFileSync('../parser/index.pegjs', 'utf8');
-const parse = pegjs.buildParser(parser).parse;
+import parse from './_parser';
 
 test('parses a task hint', t => {
   const data = `# Title
@@ -78,3 +74,5 @@ description
     const result = parse(data);
     t.deepEqual(result.pages[0].tasks, expected);
 });
+
+test.todo('parses multiline task hints');

@@ -1,9 +1,5 @@
 import test from 'ava';
-import pegjs from 'pegjs';
-import { readFileSync } from 'fs';
-
-const parser = readFileSync('../parser/index.pegjs', 'utf8');
-const parse = pegjs.buildParser(parser).parse;
+import parse from './_parser';
 
 test('parses an info title', t => {
   const data = `# Title\n`;
@@ -61,7 +57,7 @@ the next line`
   t.deepEqual(result.info, expected.info);
 });
 
-test('parses an info description seperated by breaks', t => {
+test.skip('parses an info description seperated by breaks', t => {
   const data = `# Title
 some description
 

@@ -1,9 +1,5 @@
 import test from 'ava';
-import pegjs from 'pegjs';
-import { readFileSync } from 'fs';
-
-const parser = readFileSync('../parser/index.pegjs', 'utf8');
-const parse = pegjs.buildParser(parser).parse;
+import parse from './_parser';
 
 test('parses a page title', t => {
   const data = `# Title
@@ -49,6 +45,3 @@ page two description
   t.is(result.pages[0].description, expected[0].description);
   t.is(result.pages[1].description, expected[1].description);
 });
-
-test.todo('parses an onPageComplete');
-test.todo('throws when multiple onPageCompletes');

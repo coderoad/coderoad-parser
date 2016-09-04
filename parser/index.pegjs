@@ -80,13 +80,14 @@ page_task
   }
 
 page_actions
-  = page_onComplete
+  = on_page_complete
   / page_import
 
 task_actions
   = test: task_test
   / hint: task_hint
   / action: task_action
+  / onPageComplete: on_page_complete
 
 info_title
   = '#'
@@ -126,9 +127,70 @@ task_hint
 
 task_action
 	= '@action'
+    '('
+    type: action_type
+    ')'
 
-page_onComplete
+action_type
+  = action_open
+  / action_set
+  / action_insert
+  / action_write
+  / action_write_from_file
+  break
+
+action_open
+  = 'open'
+    '('
+    quote
+    file: file_path
+    quote
+    ')'
+
+action_insert
+  = 'insert'
+    '('
+    content: .+
+    ')'
+
+action_set
+  = 'set'
+    '('
+    content: .+
+    ')'
+
+action_write
+  = 'write'
+    '('
+    quote
+    to: file_path
+    quote
+    ',' space?
+    quote
+    content: .+
+    quote
+    ')'
+
+action_write_from_file
+  = 'writeFromFile'
+    '('
+    quote
+    to: file_path
+    quote
+    ',' space?
+    quote
+    from: file_path
+    quote
+    ')'
+
+on_page_complete
 	= '@onPageComplete'
+    '('
+    quote
+    content: .+
+    quote
+    ')'
+  { return { type: 'onPageComplete', value: content.join('') }; }
 
 page_import
 	= '@import'
