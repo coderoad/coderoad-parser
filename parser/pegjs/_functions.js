@@ -1,5 +1,3 @@
-// Helper Functions
-
 function adjust(item) {
   return item[0].concat(item[1].join(''));
 }

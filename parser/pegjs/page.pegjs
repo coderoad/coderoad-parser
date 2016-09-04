@@ -10,6 +10,7 @@ page
       description: description.join('\n'),
       tasks
     }
+
     // map over any actions and add them
     actions.forEach(({type, value}) => {
       if (page.hasOwnProperty(type)) {

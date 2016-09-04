@@ -1,5 +1,5 @@
 {
-  // Initial Data
+  /*** "pegjs/_data.js" ***/
 
   var output = {
     info: {
@@ -9,12 +9,12 @@
     pages: []
   };
 
-  // Types
+  /*** "pegjs/_types.js" ***/
 
   const pageTypes = ['onPageComplete'];
   const taskTypes = ['tests', 'actions', 'hints']
 
-  // Helper Functions
+  /*** "pegjs/_functions.js" ***/
 
   function adjust(item) {
     return item[0].concat(item[1].join(''));
@@ -59,6 +59,8 @@ doc
   	break?
 	  page*
 
+/*** "pegjs/info.pegjs" ***/
+
 info
   = title: info_title
   	description: description*
@@ -73,6 +75,8 @@ info_title
     title: content
   { return adjust(title); }
 
+/*** "pegjs/page.pegjs" ***/
+
 page
   = title: page_title
     description: description*
@@ -85,6 +89,7 @@ page
       description: description.join('\n'),
       tasks
     }
+
     // map over any actions and add them
     actions.forEach(({type, value}) => {
       if (page.hasOwnProperty(type)) {
@@ -101,6 +106,8 @@ page_title
     title: content
     break
   { return adjust(title); }
+
+/*** "pegjs/task.pegjs" ***/
 
 page_task
 	= '+'
@@ -144,6 +151,8 @@ task_hint
   	return { type: 'hints', value: h };
   }
 
+/*** "pegjs/page-actions.pegjs" ***/
+
 page_actions
   = on_page_complete
 
@@ -156,6 +165,8 @@ on_page_complete
     ')'
     break
   { return { type: 'onPageComplete', value: content.join('') }; }
+
+/*** "pegjs/task-actions.pegjs" ***/
 
 task_action
 	= '@action'
@@ -215,10 +226,14 @@ action_write_from_file
     quote
     ')'
 
+/*** "pegjs/shared.pegjs" ***/
+
 description
   = description: content
     break
   { return adjust(description); }
+
+/*** "pegjs/characters.pegjs" ***/
 
 content = [^#^@^+] [^\n^\r]+ [\n\r]
 space = [ \s]

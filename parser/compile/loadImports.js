@@ -15,8 +15,8 @@ function loadImports(str) {
     const fileName = i.slice(9, -2);
 
     // load import
-    let file = readFileSync(join(__dirname, '../pegjs/', fileName), 'utf8');
-
+    let file = `/*** "${join('pegjs', fileName)}" ***/\n\n`;
+    file += readFileSync(join(__dirname, '../pegjs/', fileName), 'utf8');
 
     // indent js files
     if (!fileName.match(pegjs)) {
