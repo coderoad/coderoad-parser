@@ -1,7 +1,26 @@
+page_task
+	= '+'
+    space?
+  	description: description
+    actions: task_actions*
+    break?
+
+  { let task = { description, tests: [], hints: [] };
+	  actions.forEach(({type, value}) => {
+      if (taskTypes.includes(type)) {
+        task[type].push(value);
+      } else if (pageTypes.includes(type)) {
+        output.pages[pages.length - 1][type] = value;
+      }
+    });
+	  return task;
+  }
+
 task_actions
-  = test: task_test
-  / hint: task_hint
-  / action: task_action
+  = task_test
+  / task_hint
+  / task_action
+  / page_actions
 
 task_test
 	= '@test'

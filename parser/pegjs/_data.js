@@ -1,4 +1,5 @@
-// final parsed output for coderoad.json file
+// Initial Data
+
 var output = {
   info: {
     title: 'Tutorial Title',

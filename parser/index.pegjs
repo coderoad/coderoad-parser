@@ -1,5 +1,6 @@
 {
-  // final parsed output for coderoad.json file
+  // Initial Data
+
   var output = {
     info: {
       title: 'Tutorial Title',
@@ -8,16 +9,24 @@
     pages: []
   };
 
+  // Types
+
+  const pageTypes = ['onPageComplete'];
+  const taskTypes = ['tests', 'actions', 'hints']
+
+  // Helper Functions
+
   function adjust(item) {
     return item[0].concat(item[1].join(''));
   }
+
   function trim({desc, str, first, last}) {
     if ( str[0].match(first) && str[str.length - 1].match(last || first) ) {
       return str.slice(1, -1);
     }
-    console.log('Error. Could not parse ' + desc + ' in ' + str);
-    return str;
+    throw `Error. Could not parse "${desc}" in "${str}".`;
   }
+
   function trimBrackets(str) {
     return trim({
       desc: 'bracket',
@@ -26,6 +35,7 @@
       last: /\)/,
     });
   }
+
   function trimQuotes(str) {
     return trim({
       desc: 'quote',
@@ -33,6 +43,7 @@
       first: /[\"\'\`]/
     });
   }
+
   function trimBracketsAndQuotes(str) {
     return trimQuotes(trimBrackets(str));
   }
@@ -66,12 +77,22 @@ page
   = title: page_title
     description: description*
     tasks: page_task*
+    actions: page_actions*
+
   {
-    output.pages.push({
-    	title,
+    let page = {
+      title,
       description: description.join('\n'),
-      tasks,
+      tasks
+    }
+    // map over any actions and add them
+    actions.forEach(({type, value}) => {
+      if (page.hasOwnProperty(type)) {
+        throw `${type} already exists on page "${page.title}"`;
+      }
+      page[type] = value;
     });
+    output.pages.push(page);
   }
 
 page_title
@@ -89,14 +110,21 @@ page_task
     break?
 
   { let task = { description, tests: [], hints: [] };
-	  actions.forEach(({type, value}) => task[type].push(value));
+	  actions.forEach(({type, value}) => {
+      if (taskTypes.includes(type)) {
+        task[type].push(value);
+      } else if (pageTypes.includes(type)) {
+        output.pages[pages.length - 1][type] = value;
+      }
+    });
 	  return task;
   }
 
 task_actions
-  = test: task_test
-  / hint: task_hint
-  / action: task_action
+  = task_test
+  / task_hint
+  / task_action
+  / page_actions
 
 task_test
 	= '@test'
@@ -123,20 +151,11 @@ on_page_complete
 	= '@onPageComplete'
     '('
     quote
-    content: .+
-    quote
-    ')'
-  { return { type: 'onPageComplete', value: content.join('') }; }
-
-page_import
-	= '@import'
-    '('
-    quote
-    filePath: file_path
+    content: [a-zA-Z0-9 ]+
     quote
     ')'
     break
-  { return filePath.join(''); }
+  { return { type: 'onPageComplete', value: content.join('') }; }
 
 task_action
 	= '@action'

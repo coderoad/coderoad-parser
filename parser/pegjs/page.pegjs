@@ -2,12 +2,22 @@ page
   = title: page_title
     description: description*
     tasks: page_task*
+    actions: page_actions*
+
   {
-    output.pages.push({
-    	title,
+    let page = {
+      title,
       description: description.join('\n'),
-      tasks,
+      tasks
+    }
+    // map over any actions and add them
+    actions.forEach(({type, value}) => {
+      if (page.hasOwnProperty(type)) {
+        throw `${type} already exists on page "${page.title}"`;
+      }
+      page[type] = value;
     });
+    output.pages.push(page);
   }
 
 page_title
@@ -16,15 +26,3 @@ page_title
     title: content
     break
   { return adjust(title); }
-
-page_task
-	= '+'
-    space?
-  	description: description
-    actions: task_actions*
-    break?
-
-  { let task = { description, tests: [], hints: [] };
-	  actions.forEach(({type, value}) => task[type].push(value));
-	  return task;
-  }

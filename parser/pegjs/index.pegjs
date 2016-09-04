@@ -1,6 +1,7 @@
 {
-@import('./data.js')
-@import('./functions.js')
+@import('./_data.js')
+@import('./_types.js')
+@import('./_functions.js')
 }
 
 start

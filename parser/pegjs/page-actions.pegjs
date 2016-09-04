@@ -5,17 +5,8 @@ on_page_complete
 	= '@onPageComplete'
     '('
     quote
-    content: .+
-    quote
-    ')'
-  { return { type: 'onPageComplete', value: content.join('') }; }
-
-page_import
-	= '@import'
-    '('
-    quote
-    filePath: file_path
+    content: [a-zA-Z0-9 ]+
     quote
     ')'
     break
-  { return filePath.join(''); }
+  { return { type: 'onPageComplete', value: content.join('') }; }

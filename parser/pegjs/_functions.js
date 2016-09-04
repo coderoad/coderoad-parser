@@ -1,3 +1,5 @@
+// Helper Functions
+
 function adjust(item) {
   return item[0].concat(item[1].join(''));
 }
@@ -6,8 +8,7 @@ function trim({desc, str, first, last}) {
   if ( str[0].match(first) && str[str.length - 1].match(last || first) ) {
     return str.slice(1, -1);
   }
-  console.log('Error. Could not parse ' + desc + ' in ' + str);
-  return str;
+  throw `Error. Could not parse "${desc}" in "${str}".`;
 }
 
 function trimBrackets(str) {
