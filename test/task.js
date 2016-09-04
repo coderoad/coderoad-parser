@@ -12,8 +12,6 @@ description
 `;
   const expected = [{
     description: 'Task One',
-    tests: [],
-    hints: []
   }];
   const result = parse(data);
   t.deepEqual(result.pages[0].tasks, expected);
@@ -32,12 +30,8 @@ description
 `;
   const expected = [{
     description: 'Task One',
-    tests: [],
-    hints: []
   }, {
     description: 'Task Two',
-    tests: [],
-    hints: []
   }];
   const result = parse(data);
   t.deepEqual(result.pages[0].tasks, expected);

@@ -16,7 +16,6 @@ description
     tests: [
       '01, 02'
     ],
-    hints: []
   }];
   const result = parse(data);
   t.deepEqual(result.pages[0].tasks, expected);
@@ -39,7 +38,6 @@ description
       '01, 02',
       '03, 04'
     ],
-    hints: []
   }];
   const result = parse(data);
   t.deepEqual(result.pages[0].tasks, expected);
@@ -63,13 +61,11 @@ description
     tests: [
       '01, 02'
     ],
-    hints: []
   }, {
     description: 'Task Two',
     tests: [
       '02, 01'
     ],
-    hints: []
   }];
   const result = parse(data);
   t.deepEqual(result.pages[0].tasks, expected);

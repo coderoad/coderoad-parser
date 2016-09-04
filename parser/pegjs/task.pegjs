@@ -5,10 +5,13 @@ page_task
     actions: task_actions*
     break?
 
-  { let task = { description, tests: [], hints: [] };
+  { let task = { description };
 	  actions.forEach(({type, value}) => {
 			// task actions
       if (taskTypes.includes(type)) {
+				if (!task.hasOwnProperty(type)) {
+					task[type] = [];
+				}
         task[type].push(value);
 			// page actions
       } else if (pageTypes.includes(type)) {

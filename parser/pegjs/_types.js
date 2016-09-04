@@ -1,2 +1,2 @@
 const pageTypes = ['onPageComplete'];
-const taskTypes = ['tests', 'actions', 'hints']
+const taskTypes = ['tests', 'hints', 'actions']

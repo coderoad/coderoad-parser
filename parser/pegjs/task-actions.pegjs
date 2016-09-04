@@ -1,16 +1,24 @@
 task_action
 	= '@action'
     '('
-    type: action_type
-    ')'
+    action: action_type
+		')'
+		break
+
+	{
+		return {
+			type: 'actions',
+			value: action,
+		};
+	}
 
 action_type
-  = action_open
-  / action_set
+  = action: action_open
+  /*/ action_set
   / action_insert
   / action_write
-  / action_write_from_file
-  break
+  / action_write_from_file*/
+
 
 action_open
   = 'open'
@@ -19,6 +27,7 @@ action_open
     file: file_path
     quote
     ')'
+	{ return `open("${file.join('')}")`; }
 
 action_insert
   = 'insert'

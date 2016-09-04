@@ -12,7 +12,7 @@
   /*** "pegjs/_types.js" ***/
 
   const pageTypes = ['onPageComplete'];
-  const taskTypes = ['tests', 'actions', 'hints']
+  const taskTypes = ['tests', 'hints', 'actions']
 
   /*** "pegjs/_functions.js" ***/
 
@@ -132,10 +132,13 @@ page_task
     actions: task_actions*
     break?
 
-  { let task = { description, tests: [], hints: [] };
+  { let task = { description };
 	  actions.forEach(({type, value}) => {
 			// task actions
       if (taskTypes.includes(type)) {
+				if (!task.hasOwnProperty(type)) {
+					task[type] = [];
+				}
         task[type].push(value);
 			// page actions
       } else if (pageTypes.includes(type)) {
@@ -199,16 +202,24 @@ on_page_complete
 task_action
 	= '@action'
     '('
-    type: action_type
-    ')'
+    action: action_type
+		')'
+		break
+
+	{
+		return {
+			type: 'actions',
+			value: action,
+		};
+	}
 
 action_type
-  = action_open
-  / action_set
+  = action: action_open
+  /*/ action_set
   / action_insert
   / action_write
-  / action_write_from_file
-  break
+  / action_write_from_file*/
+
 
 action_open
   = 'open'
@@ -217,6 +228,7 @@ action_open
     file: file_path
     quote
     ')'
+	{ return `open("${file.join('')}")`; }
 
 action_insert
   = 'insert'
