@@ -36,4 +36,54 @@ description
   t.is(result.pages[1].onPageComplete, expectedSecond);
 });
 
-test.todo('throws when multiple onPageCompletes');
+test('throws when onPageComplete does not close bracket', t => {
+  const data = `# Title
+description
+
+## Page One
+description
+
+@onPageComplete('when page ends'
+`;
+
+  try {
+    parse(data);
+  } catch (e) {
+    t.is(e.message, "Invalid @onPageComplete(). Expected closing quote and bracket but found: \"when page ends'\"")
+  }
+});
+
+test('throws when onPageComplete does not close quote', t => {
+  const data = `# Title
+description
+
+## Page One
+description
+
+@onPageComplete('when page ends)
+`;
+
+  try {
+    parse(data);
+  } catch (e) {
+    t.is(e.message, "Invalid @onPageComplete(). Expected closing quote and bracket but found: \"when page ends)\"")
+  }
+});
+
+test('throws when multiple onPageCompletes', t => {
+  const data = `# Title
+description
+
+## Page One
+description
+
+@onPageComplete('first')
+@onPageComplete('second')
+`;
+
+  try {
+    parse(data);
+  } catch (e) {
+    t.is(e.message, "\"onPageComplete\" already exists on page \"Page One\"");
+  }
+});

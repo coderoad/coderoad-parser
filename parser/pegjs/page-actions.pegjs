@@ -13,7 +13,7 @@ on_page_complete
       // remove '\')' from end
       value = value.slice(0, -2);
     } else {
-      throw `Invalid @onPageComplete(). Expected closing quote and bracket but found: ${value}`;
+      throw new Error(`Invalid @onPageComplete(). Expected closing quote and bracket but found: "${value}"`);
     }
     return {
       type: 'onPageComplete',

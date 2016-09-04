@@ -109,7 +109,7 @@ page
     // map over any actions and add them
     actions.forEach(({type, value}) => {
       if (page.hasOwnProperty(type)) {
-        throw `${type} already exists on page "${page.title}"`;
+        throw new Error(`\"${type}\" already exists on page \"${page.title}\"`);
       }
       page[type] = value;
     });
@@ -186,7 +186,7 @@ on_page_complete
       // remove '\')' from end
       value = value.slice(0, -2);
     } else {
-      throw `Invalid @onPageComplete(). Expected closing quote and bracket but found: ${value}`;
+      throw new Error(`Invalid @onPageComplete(). Expected closing quote and bracket but found: "${value}"`);
     }
     return {
       type: 'onPageComplete',

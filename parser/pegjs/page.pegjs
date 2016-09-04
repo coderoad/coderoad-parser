@@ -14,7 +14,7 @@ page
     // map over any actions and add them
     actions.forEach(({type, value}) => {
       if (page.hasOwnProperty(type)) {
-        throw `${type} already exists on page "${page.title}"`;
+        throw new Error(`\"${type}\" already exists on page \"${page.title}\"`);
       }
       page[type] = value;
     });
