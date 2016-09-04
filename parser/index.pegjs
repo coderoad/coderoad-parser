@@ -45,73 +45,78 @@ start
 doc
   = info
   	break?
-	page*
+	  page*
 
 info
   = title: info_title
   	description: description*
-   {
-   output.info.title = title;
-   output.info.description = description.join('\n');
-   }
+  {
+    output.info.title = title;
+    output.info.description = description.join('\n');
+  }
 
 page
   = title: page_title
     description: description*
     tasks: page_task*
-    {
-	 output.pages.push({
-      	title,
-        description: description.join('\n'),
-        tasks,
-      });
+  {
+    output.pages.push({
+    	title,
+      description: description.join('\n'),
+      tasks,
+    });
+  }
 
-    }
+page_task
+	= '+'
+    space?
+  	description: description
+    tests: task_test*
+    hints: task_hint*
+    break?
+
+  { return { description, tests, hints }; }
+
+info_title
+  = '#'
+    space?
+    title: content
+  { return adjust(title); }
 
 page_title
   = '##'
     space?
     title: content
     break
-   	{ return adjust(title); }
+  { return adjust(title); }
 
-page_task
-	= '+'
-    space?
-  	description: content
+description
+  = description: content
     break
-    tests: task_test*
-    hints: task_hint*
-    break?
-
-  {
-   	return {
-	  description: adjust(description),
-      tests,
-      hints,
-    };
-  }
+  { return adjust(description); }
 
 page_actions
 	= page_onComplete
-    / page_import
+  / page_import
 
 task_actions
 	= task_test
-    / task_hint
-    / task_action
+  / task_hint
+  / task_action
 
 task_test
 	= '@test'
-    '(' quote
+    '('
+    quote
     testPath: [^\n^\r^\'\"\`)]+
-	  quote ')'
+	  quote
+    ')'
     break
   { return testPath.join(''); }
 
 task_hint
 	= '@hint'
-      hint: [^\n^\r]+
+    hint: [^\n^\r]+
     break
   { return trimBracketsAndQuotes(hint.join('')); }
 
@@ -123,17 +128,16 @@ page_onComplete
 
 page_import
 	= '@import'
-
-info_title
-  = '#'
-    space?
-    title: content
-    { return adjust(title); }
-
-description
-  = description: content
+    '('
+    quote
+    filePath: file_path
+    quote
+    ')'
     break
-    { return adjust(description); }
+  { return filePath.join(''); }
+
+  
+// characters
 
 content = [^#^@^+] [^\n^\r]+ [\n\r]
 space = [ \s]

@@ -11,12 +11,9 @@ description
 
 ## Page One
 `;
-  const expected = [{
-    title: 'Page One',
-    description: ''
-  }];
+  const expected = 'Page One';
   const result = parse(data);
-  t.deepEqual(result.pages, expected);
+  t.is(result.pages[0].title, expected);
 });
 
 test('parses a page with empty description', t => {
@@ -26,12 +23,9 @@ description
 ## Page One
 page one description
 `;
-  const expected = [{
-    title: 'Page One',
-    description: 'page one description'
-  }];
+  const expected = 'page one description';
   const result = parse(data);
-  t.deepEqual(result.pages, expected);
+  t.is(result.pages[0].description, expected);
 });
 
 test('parses two pages', t => {
@@ -52,7 +46,8 @@ page two description
     description: 'page two description'
   }];
   const result = parse(data);
-  t.deepEqual(result.pages, expected);
+  t.is(result.pages[0].description, expected[0].description);
+  t.is(result.pages[1].description, expected[1].description);
 });
 
 test.todo('parses an onPageComplete');
