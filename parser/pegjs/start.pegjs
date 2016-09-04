@@ -8,35 +8,7 @@
     pages: []
   };
 
-  function adjust(item) {
-    return item[0].concat(item[1].join(''));
-  }
-  function trim({desc, str, first, last}) {
-    if ( str[0].match(first) && str[str.length - 1].match(last || first) ) {
-      return str.slice(1, -1);
-    }
-    console.log('Error. Could not parse ' + desc + ' in ' + str);
-    return str;
-  }
-  function trimBrackets(str) {
-    return trim({
-      desc: 'bracket',
-      str: str,
-      first: /\(/,
-      last: /\)/,
-    });
-  }
-  function trimQuotes(str) {
-    return trim({
-      desc: 'quote',
-      str,
-      first: /[\"\'\`]/
-    });
-  }
-  function trimBracketsAndQuotes(str) {
-    return trimQuotes(trimBrackets(str));
-  }
-
+@import('./functions')
 
 }
 
@@ -145,67 +117,5 @@ page_import
     break
   { return filePath.join(''); }
 
-task_action
-	= '@action'
-    '('
-    type: action_type
-    ')'
-
-action_type
-  = action_open
-  / action_set
-  / action_insert
-  / action_write
-  / action_write_from_file
-  break
-
-action_open
-  = 'open'
-    '('
-    quote
-    file: file_path
-    quote
-    ')'
-
-action_insert
-  = 'insert'
-    '('
-    content: .+
-    ')'
-
-action_set
-  = 'set'
-    '('
-    content: .+
-    ')'
-
-action_write
-  = 'write'
-    '('
-    quote
-    to: file_path
-    quote
-    ',' space?
-    quote
-    content: .+
-    quote
-    ')'
-
-action_write_from_file
-  = 'writeFromFile'
-    '('
-    quote
-    to: file_path
-    quote
-    ',' space?
-    quote
-    from: file_path
-    quote
-    ')'
-
-content = [^#^@^+] [^\n^\r]+ [\n\r]
-space = [ \s]
-break = [\n\r]?
-file_path = [a-z_\-\s0-9\.]+
-quote = [\"\'\`]
-
+@import('./action')
+@import('./common')

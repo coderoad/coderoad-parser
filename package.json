@@ -8,11 +8,11 @@
   "main": "parser/index.pegjs",
   "scripts": {
     "test": "ava",
-    "test:watch": "ava --watch"
+    "test:watch": "ava --watch",
+    "start": "node ./parser/compile/index.js"
   },
   "dependencies": {
-    "pegjs": "^0.9.0",
-    "pegjs-import": "^0.2.6"
+    "pegjs": "^0.10.0"
   },
   "devDependencies": {
     "ava": "^0.16.0"
