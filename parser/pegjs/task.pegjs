@@ -7,8 +7,10 @@ page_task
 
   { let task = { description, tests: [], hints: [] };
 	  actions.forEach(({type, value}) => {
+			// task actions
       if (taskTypes.includes(type)) {
         task[type].push(value);
+			// page actions
       } else if (pageTypes.includes(type)) {
         output.pages[pages.length - 1][type] = value;
       }

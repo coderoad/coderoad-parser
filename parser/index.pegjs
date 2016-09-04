@@ -16,8 +16,24 @@
 
   /*** "pegjs/_functions.js" ***/
 
+  function flatten(items) {
+    const flat = [];
+    items.forEach(item => {
+      if (Array.isArray(item)) {
+        flat.push(...flatten(item));
+      } else {
+        flat.push(item);
+      }
+    });
+    return flat;
+  }
+
   function adjust(item) {
-    return item[0].concat(item[1].join(''));
+    let flat = flatten(item);
+    if (flat[flat.length - 1] === '\n') {
+      flat = flat.slice(0, -1);
+    }
+    return flat.join('');
   }
 
   function trim({desc, str, first, last}) {
@@ -118,8 +134,10 @@ page_task
 
   { let task = { description, tests: [], hints: [] };
 	  actions.forEach(({type, value}) => {
+			// task actions
       if (taskTypes.includes(type)) {
         task[type].push(value);
+			// page actions
       } else if (pageTypes.includes(type)) {
         output.pages[pages.length - 1][type] = value;
       }
@@ -160,11 +178,21 @@ on_page_complete
 	= '@onPageComplete'
     '('
     quote
-    content: [a-zA-Z0-9 ]+
-    quote
-    ')'
+    content: until_end
     break
-  { return { type: 'onPageComplete', value: content.join('') }; }
+  {
+    let value = adjust(content);
+    if (value.match(/[\'\"]\)/)) {
+      // remove '\')' from end
+      value = value.slice(0, -2);
+    } else {
+      throw `Invalid @onPageComplete(). Expected closing quote and bracket but found: ${value}`;
+    }
+    return {
+      type: 'onPageComplete',
+      value,
+    };
+  }
 
 /*** "pegjs/task-actions.pegjs" ***/
 
@@ -235,9 +263,10 @@ description
 
 /*** "pegjs/characters.pegjs" ***/
 
-content = [^#^@^+] [^\n^\r]+ [\n\r]
+content = [^#^@^+] until_end
+until_end = [^\n^\r]+ [\n\r]
 space = [ \s]
 break = [\n\r]?
-file_path = [a-z_\-\s0-9\.]+
+file_path = [a-zA-Z0-9_\-\s\.]+
 quote = [\"\'\`]
 

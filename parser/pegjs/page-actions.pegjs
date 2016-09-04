@@ -5,8 +5,18 @@ on_page_complete
 	= '@onPageComplete'
     '('
     quote
-    content: [a-zA-Z0-9 ]+
-    quote
-    ')'
+    content: until_end
     break
-  { return { type: 'onPageComplete', value: content.join('') }; }
+  {
+    let value = adjust(content);
+    if (value.match(/[\'\"]\)/)) {
+      // remove '\')' from end
+      value = value.slice(0, -2);
+    } else {
+      throw `Invalid @onPageComplete(). Expected closing quote and bracket but found: ${value}`;
+    }
+    return {
+      type: 'onPageComplete',
+      value,
+    };
+  }
