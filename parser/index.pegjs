@@ -229,13 +229,13 @@ action_open
 action_insert
   = 'insert'
     content: between_brackets
-	{ return `insert${adjust(content)}`; }
+	{ return `insert(${content})`; }
 
 action_set
   = 'set'
     content: between_brackets
 	// second: (between_code_block space? ')' space? )
-	{ return `set${adjust(content)}`; }
+	{ return `set(${content})`; }
 
 action_write
   = 'write'
@@ -270,7 +270,6 @@ content = [^#^@^+] until_end
 space = [ \s]
 break = [\n\r]?
 quote = [\"\'\`]
-between_brackets = '(' [^\)]+ ')'
 between_code_block = '```\n' [^\`]+ '```'
 
 until_end
@@ -283,4 +282,10 @@ file_path
     filePath:[a-zA-Z0-9_\-\s\.]+
     quote
   { return `\"${adjust(filePath)}\"`; }
+
+between_brackets
+  = '('
+    content: [^\)]+
+    ')'
+  { return adjust(content); }
 

@@ -29,13 +29,13 @@ action_open
 action_insert
   = 'insert'
     content: between_brackets
-	{ return `insert${adjust(content)}`; }
+	{ return `insert(${content})`; }
 
 action_set
   = 'set'
     content: between_brackets
 	// second: (between_code_block space? ')' space? )
-	{ return `set${adjust(content)}`; }
+	{ return `set(${content})`; }
 
 action_write
   = 'write'
