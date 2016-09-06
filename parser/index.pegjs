@@ -162,13 +162,13 @@ task_test
 	  quote
     ')'
     break
-  { return { type: 'tests', value: testPath.join('') }; }
+  { return { type: 'tests', value: adjust(testPath) }; }
 
 task_hint
 	= '@hint'
     hint: [^\n^\r]+
     break
-  { let h = trimBracketsAndQuotes(hint.join(''));
+  { let h = trimBracketsAndQuotes(adjust(hint));
   	return { type: 'hints', value: h };
   }
 
@@ -223,51 +223,40 @@ action_type
 action_open
   = 'open'
     '('
-    quote
     file: file_path
-    quote
     ')'
-	{ return `open("${file.join('')}")`; }
+	{ return `open(${adjust(file)})`; }
 
 action_insert
   = 'insert'
-    '('
-    content: between_brackets // TODO: make this more flexible
-		')'
-	{ return `insert(${flatten(content).join('')})`; }
+    content: between_brackets
+	{ return `insert${adjust(content)}`; }
 
 action_set
   = 'set'
-		'('
-    content: between_brackets // TODO: make this more flexible
-		')'
-	{ return `set(${flatten(content).join('')})`; }
+    content: between_brackets
+	// second: (between_code_block space? ')' space? )
+	{ return `set${adjust(content)}`; }
 
 action_write
   = 'write'
     '('
-    quote
     to: file_path
-    quote
     ',' space?
     quote
     content: [^\'\"]+ // TODO: make this more flexible
     quote
     ')'
-	{ return `write(\"${to.join('')}\", \"${content.join('')}\")`}
+	{ return `write(${adjust(to)}, \"${adjust(content)}\")`}
 
 action_write_from_file
   = 'writeFromFile'
     '('
-    quote
     to: file_path
-    quote
     ',' space?
-    quote
     from: file_path
-    quote
     ')'
-	{ return `writeFromFile("${to.join('')}", "${from.join('')}")`; }
+	{ return `writeFromFile(${adjust(to)}, ${adjust(from)})`; }
 
 /*** "pegjs/shared.pegjs" ***/
 
@@ -282,7 +271,8 @@ content = [^#^@^+] until_end
 until_end = [^\n^\r]+ [\n\r]
 space = [ \s]
 break = [\n\r]?
-file_path = [a-zA-Z0-9_\-\s\.]+
+file_path = quote [a-zA-Z0-9_\-\s\.]+ quote
 quote = [\"\'\`]
-between_brackets = [^\)]+
+between_brackets = '(' [^\)]+ ')'
+between_code_block = '```\n' [^\`]+ '```'
 

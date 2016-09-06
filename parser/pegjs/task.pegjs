@@ -35,12 +35,12 @@ task_test
 	  quote
     ')'
     break
-  { return { type: 'tests', value: testPath.join('') }; }
+  { return { type: 'tests', value: adjust(testPath) }; }
 
 task_hint
 	= '@hint'
     hint: [^\n^\r]+
     break
-  { let h = trimBracketsAndQuotes(hint.join(''));
+  { let h = trimBracketsAndQuotes(adjust(hint));
   	return { type: 'hints', value: h };
   }

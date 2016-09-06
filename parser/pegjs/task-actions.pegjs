@@ -22,48 +22,37 @@ action_type
 action_open
   = 'open'
     '('
-    quote
     file: file_path
-    quote
     ')'
-	{ return `open("${file.join('')}")`; }
+	{ return `open(${adjust(file)})`; }
 
 action_insert
   = 'insert'
-    '('
-    content: between_brackets // TODO: make this more flexible
-		')'
-	{ return `insert(${flatten(content).join('')})`; }
+    content: between_brackets
+	{ return `insert${adjust(content)}`; }
 
 action_set
   = 'set'
-		'('
-    content: between_brackets // TODO: make this more flexible
-		')'
-	{ return `set(${flatten(content).join('')})`; }
+    content: between_brackets
+	// second: (between_code_block space? ')' space? )
+	{ return `set${adjust(content)}`; }
 
 action_write
   = 'write'
     '('
-    quote
     to: file_path
-    quote
     ',' space?
     quote
     content: [^\'\"]+ // TODO: make this more flexible
     quote
     ')'
-	{ return `write(\"${to.join('')}\", \"${content.join('')}\")`}
+	{ return `write(${adjust(to)}, \"${adjust(content)}\")`}
 
 action_write_from_file
   = 'writeFromFile'
     '('
-    quote
     to: file_path
-    quote
     ',' space?
-    quote
     from: file_path
-    quote
     ')'
-	{ return `writeFromFile("${to.join('')}", "${from.join('')}")`; }
+	{ return `writeFromFile(${adjust(to)}, ${adjust(from)})`; }
