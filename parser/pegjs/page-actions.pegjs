@@ -6,7 +6,7 @@ on_page_complete
     '('
     quote
     value: until_end
-    break
+    break?
   {
     if (value.match(/[\'\"]\)/)) {
       // remove '\')' from end

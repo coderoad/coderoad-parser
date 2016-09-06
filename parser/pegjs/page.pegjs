@@ -25,5 +25,5 @@ page_title
   = '##'
     space?
     title: content
-    break
+    break?
   { return adjust(title); }

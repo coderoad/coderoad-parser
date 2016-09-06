@@ -1,4 +1,4 @@
 description
   = description: content
-    break
+    break?
   { return adjust(description); }
