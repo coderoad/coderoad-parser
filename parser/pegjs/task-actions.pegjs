@@ -24,7 +24,7 @@ action_open
     '('
     file: file_path
     ')'
-	{ return `open(${adjust(file)})`; }
+	{ return `open(${file})`; }
 
 action_insert
   = 'insert'
@@ -46,7 +46,7 @@ action_write
     content: [^\'\"]+ // TODO: make this more flexible
     quote
     ')'
-	{ return `write(${adjust(to)}, \"${adjust(content)}\")`}
+	{ return `write(${to}, \"${adjust(content)}\")`}
 
 action_write_from_file
   = 'writeFromFile'
@@ -55,4 +55,4 @@ action_write_from_file
     ',' space?
     from: file_path
     ')'
-	{ return `writeFromFile(${adjust(to)}, ${adjust(from)})`; }
+	{ return `writeFromFile(${to}, ${from})`; }

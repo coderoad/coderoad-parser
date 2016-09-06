@@ -225,7 +225,7 @@ action_open
     '('
     file: file_path
     ')'
-	{ return `open(${adjust(file)})`; }
+	{ return `open(${file})`; }
 
 action_insert
   = 'insert'
@@ -247,7 +247,7 @@ action_write
     content: [^\'\"]+ // TODO: make this more flexible
     quote
     ')'
-	{ return `write(${adjust(to)}, \"${adjust(content)}\")`}
+	{ return `write(${to}, \"${adjust(content)}\")`}
 
 action_write_from_file
   = 'writeFromFile'
@@ -256,7 +256,7 @@ action_write_from_file
     ',' space?
     from: file_path
     ')'
-	{ return `writeFromFile(${adjust(to)}, ${adjust(from)})`; }
+	{ return `writeFromFile(${to}, ${from})`; }
 
 /*** "pegjs/shared.pegjs" ***/
 
@@ -271,8 +271,13 @@ content = [^#^@^+] until_end
 until_end = [^\n^\r]+ [\n\r]
 space = [ \s]
 break = [\n\r]?
-file_path = quote [a-zA-Z0-9_\-\s\.]+ quote
 quote = [\"\'\`]
 between_brackets = '(' [^\)]+ ')'
 between_code_block = '```\n' [^\`]+ '```'
+
+file_path
+  = quote
+    filePath:[a-zA-Z0-9_\-\s\.]+
+    quote
+  { return `\"${adjust(filePath)}\"`; }
 

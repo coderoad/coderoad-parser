@@ -7,7 +7,7 @@ const start = require('./_setup');
 test('parses an action: write (single-line)', t => {
   const data = `${start}@action(write('to.js', 'hello'))
 `;
-  const expected = ["write(\'to.js\', \"hello\")"];
+  const expected = ["write(\"to.js\", \"hello\")"];
   const result = parse(data);
   t.deepEqual(result.pages[0].tasks[0].actions, expected);
 });
@@ -17,7 +17,7 @@ test('parses an action: write (single-line)', t => {
 test('parses an action: writeFromFile', t => {
   const data = `${start}@action(writeFromFile('to.js', 'from.js'))
 `;
-  const expected = ["writeFromFile(\'to.js\', \'from.js\')"];
+  const expected = ["writeFromFile(\"to.js\", \"from.js\")"];
   const result = parse(data);
   t.deepEqual(result.pages[0].tasks[0].actions, expected);
 });
