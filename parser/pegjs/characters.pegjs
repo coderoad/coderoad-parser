@@ -24,11 +24,15 @@ between_brackets
   = '('
     content: [^\)]+
     ')'
-  { return adjust(content); }
+  { return trimQuotes(adjust(content)); }
 
 between_code_block
-  = code_block
+  = '('
     break?
-    content: [^\`]+
     code_block
+    break?
+    content: ( [^\`]+ / '`' [^\`]+ )+
+    code_block
+    break?
+    ')'
   { return adjust(content); }

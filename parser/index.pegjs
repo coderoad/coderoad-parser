@@ -120,7 +120,6 @@ page_title
   = '##'
     space?
     title: content
-    break?
   { return adjust(title); }
 
 /*** "pegjs/task.pegjs" ***/
@@ -228,14 +227,13 @@ action_open
 
 action_insert
   = 'insert'
-    content: between_brackets
-	{ return `insert(${content})`; }
+    content: ( between_code_block / between_brackets )
+	{ return `insert(\"${content}\")`; }
 
 action_set
   = 'set'
-    content: between_brackets
-	// second: (between_code_block space? ')' space? )
-	{ return `set(${content})`; }
+    content: ( between_code_block / between_brackets )
+	{ return `set(\"${content}\")`; }
 
 action_write
   = 'write'
@@ -292,12 +290,16 @@ between_brackets
   = '('
     content: [^\)]+
     ')'
-  { return adjust(content); }
+  { return trimQuotes(adjust(content)); }
 
 between_code_block
-  = code_block
+  = '('
     break?
-    content: [^\`]+
     code_block
+    break?
+    content: ( [^\`]+ / '`' [^\`]+ )+
+    code_block
+    break?
+    ')'
   { return adjust(content); }
 
