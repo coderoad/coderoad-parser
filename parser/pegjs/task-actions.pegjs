@@ -2,9 +2,7 @@ task_action
 	= '@action'
     '('
     value: action_type
-		')'
-		break
-
+		// must complete with ')' & \n
 	{
 		return {
 			type: 'actions',
@@ -24,16 +22,29 @@ action_open
     '('
     file: file_path
     ')'
+		break?
+		')'
 	{ return `open(${file})`; }
 
 action_insert
   = 'insert'
-    content: ( between_code_block / between_brackets )
+    content:
+	(
+		between_code_block_and_brackets
+	/ between_brackets
+	)
+		break?
+		')'
 	{ return `insert(\"${content}\")`; }
 
 action_set
   = 'set'
-    content: ( between_code_block / between_brackets )
+    content: (
+		between_code_block_and_brackets
+	/ between_brackets
+		)
+		break?
+		')'
 	{ return `set(\"${content}\")`; }
 
 action_write
@@ -41,11 +52,11 @@ action_write
     '('
     to: file_path
     ',' space?
-    quote
-    content: [^\'\"]+ // TODO: make this more flexible
-    quote
-    ')'
-	{ return `write(${to}, \"${adjust(content)}\")`}
+    content: ( between_code_block_with_closing_bracket
+			/ until_end_quote_bracket ) // TODO: make this more flexible
+		break?
+
+	{ return `write(${to}, \"${content}\")`}
 
 action_write_from_file
   = 'writeFromFile'
@@ -54,4 +65,6 @@ action_write_from_file
     ',' space?
     from: file_path
     ')'
+		break?
+		')'
 	{ return `writeFromFile(${to}, ${from})`; }

@@ -7,7 +7,7 @@
   "author": "Shawn McKay <shawn.j.mckay@gmail.com>",
   "main": "parser/index.pegjs",
   "scripts": {
-    "test": "ava",
+    "test": "npm start && ava",
     "test:watch": "ava --watch",
     "start": "node ./parser/compile/index.js"
   },

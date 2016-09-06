@@ -12,6 +12,18 @@ test('parses an action: write (single-line)', t => {
   t.deepEqual(result.pages[0].tasks[0].actions, expected);
 });
 
+test('parses an action: write (multi-line, ```)', t => {
+  const data = `${start}@action(write(\"to.js\", \`\`\`
+var a = 42;
+var b = 43;
+\`\`\`
+))
+`;
+  const expected = ["write(\"to.js\", \"var a = 42;\nvar b = 43;\")"];
+  const result = parse(data);
+  t.deepEqual(result.pages[0].tasks[0].actions, expected);
+});
+
 // writeFromFile
 
 test('parses an action: writeFromFile', t => {
