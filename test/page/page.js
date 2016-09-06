@@ -1,5 +1,5 @@
 import test from 'ava';
-import parse from './_parser';
+import parse from '../_parser';
 
 test('parses a page title', t => {
   const data = `# Title

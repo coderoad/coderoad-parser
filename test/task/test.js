@@ -1,7 +1,7 @@
 import test from 'ava';
-import parse from './_parser';
+import parse from '../_parser';
 
-test('parses a task description', t => {
+test('parses a task test', t => {
   const data = `# Title
 description
 
@@ -9,15 +9,19 @@ description
 description
 
 + Task One
+@test('01, 02')
 `;
   const expected = [{
     description: 'Task One',
+    tests: [
+      '01, 02'
+    ],
   }];
   const result = parse(data);
   t.deepEqual(result.pages[0].tasks, expected);
 });
 
-test('parses a second page with a task', t => {
+test('parses multiple task tests', t => {
   const data = `# Title
 description
 
@@ -25,62 +29,48 @@ description
 description
 
 + Task One
+@test('01, 02')
+@test('03, 04')
+`;
+  const expected = [{
+    description: 'Task One',
+    tests: [
+      '01, 02',
+      '03, 04'
+    ],
+  }];
+  const result = parse(data);
+  t.deepEqual(result.pages[0].tasks, expected);
+});
+
+test('parses task tests across pages', t => {
+  const data = `# Title
+description
+
+## Page One
+description
+
++ Task One
+@test('01, 02')
 
 + Task Two
+@test('02, 01')
 `;
   const expected = [{
     description: 'Task One',
+    tests: [
+      '01, 02'
+    ],
   }, {
     description: 'Task Two',
-  }];
-  const result = parse(data);
-  t.deepEqual(result.pages[0].tasks, expected);
-});
-
-test('parses a task hint before a test', t => {
-  const data = `# Title
-description
-
-## Page One
-description
-
-+ Task One
-@test('01, 02')
-@hint('do something')
-`;
-  const expected = [{
-    description: 'Task One',
     tests: [
-      '01, 02'
+      '02, 01'
     ],
-    hints: [
-      'do something'
-    ]
   }];
   const result = parse(data);
   t.deepEqual(result.pages[0].tasks, expected);
 });
 
-test('parses a task test before a hint', t => {
-  const data = `# Title
-description
+test.todo('warns when missing a task test');
 
-## Page One
-description
-
-+ Task One
-@hint('do something')
-@test('01, 02')
-`;
-  const expected = [{
-    description: 'Task One',
-    tests: [
-      '01, 02'
-    ],
-    hints: [
-      'do something'
-    ]
-  }];
-  const result = parse(data);
-  t.deepEqual(result.pages[0].tasks, expected);
-});
+test.todo('parses an array of task tests');
