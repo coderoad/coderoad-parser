@@ -181,10 +181,9 @@ on_page_complete
 	= '@onPageComplete'
     '('
     quote
-    content: until_end
+    value: until_end
     break
   {
-    let value = adjust(content);
     if (value.match(/[\'\"]\)/)) {
       // remove '\')' from end
       value = value.slice(0, -2);
@@ -268,12 +267,16 @@ description
 /*** "pegjs/characters.pegjs" ***/
 
 content = [^#^@^+] until_end
-until_end = [^\n^\r]+ [\n\r]
 space = [ \s]
 break = [\n\r]?
 quote = [\"\'\`]
 between_brackets = '(' [^\)]+ ')'
 between_code_block = '```\n' [^\`]+ '```'
+
+until_end
+  = content: [^\n^\r]+
+    [\n\r]
+  { return adjust(content); }
 
 file_path
   = quote

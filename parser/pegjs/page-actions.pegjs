@@ -5,10 +5,9 @@ on_page_complete
 	= '@onPageComplete'
     '('
     quote
-    content: until_end
+    value: until_end
     break
   {
-    let value = adjust(content);
     if (value.match(/[\'\"]\)/)) {
       // remove '\')' from end
       value = value.slice(0, -2);

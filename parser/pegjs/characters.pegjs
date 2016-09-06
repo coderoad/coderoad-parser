@@ -1,10 +1,14 @@
 content = [^#^@^+] until_end
-until_end = [^\n^\r]+ [\n\r]
 space = [ \s]
 break = [\n\r]?
 quote = [\"\'\`]
 between_brackets = '(' [^\)]+ ')'
 between_code_block = '```\n' [^\`]+ '```'
+
+until_end
+  = content: [^\n^\r]+
+    [\n\r]
+  { return adjust(content); }
 
 file_path
   = quote
