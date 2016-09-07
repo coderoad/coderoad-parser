@@ -4,6 +4,7 @@ break = [\n\r]
 non_break = [^\n^\r]
 quote = [\"\'\`]
 code_block = '```'
+closing_bracket = break? ')'
 
 content
   = non_special_line
@@ -26,33 +27,16 @@ between_brackets
     ')'
   { return trimQuotes(adjust(content)); }
 
-between_code_block
+in_code_block
   = break?
     code_block
     break?
-    content: ( [^\`]+ / '`' [^\`]+ )+ // not three back ticks
+    content: ( [^\`]+ / '`' [^\`]+ )+ // anything but ```
     code_block
     break?
   { return adjust(content); }
 
-between_code_block_and_brackets
-  = '('
-    content: between_code_block
-    ')'
-  { return content; }
-
-between_code_block_with_closing_bracket
-  = content: between_code_block
-  ')'
-  break?
-  ')'
-  { return content; }
-
-until_end_quote_bracket
-  = content: until_end
-  {
-    // trim off final quote & bracket
-    if (content.match(/[\"\'\`][\n\r]?\)[\n\r]?\)$/)) {
-      return content.slice(1, -3);
-    }
-  }
+in_single_line
+  = quote
+  content: until_end
+  { return content.slice(0, -1); }
